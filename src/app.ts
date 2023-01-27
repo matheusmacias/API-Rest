@@ -1,6 +1,7 @@
 import express, { NextFunction, Request, Response } from 'express';
-import cors from 'cors';
+import bodyParser from 'body-parser';
 import morgan from 'morgan';
+
 
 import HttpError from './helpers/HttpError';
 import userRouter from './routes/user.router';
@@ -10,6 +11,7 @@ class App {
 
     public constructor() {
         this.express = express();
+        this.bodyParser();
         this.routes();
         this.middlewares();
     }
@@ -18,10 +20,14 @@ class App {
         this.express.use(userRouter);
     }
 
+    private bodyParser(): void {
+        this.express.use(bodyParser.json());
+        this.express.use(bodyParser.urlencoded({ extended: false }));
+    }
+
     private middlewares(): void {
         this.express.use(express.json());
         this.express.use(morgan('dev'));
-        this.express.use(cors());
         this.express.use(this.errorHandlerNotFound);
         this.express.use(this.errorHandler);
     }
