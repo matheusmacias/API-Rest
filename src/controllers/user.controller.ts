@@ -7,16 +7,37 @@ import HttpError from '../helpers/HttpError';
 
 class UserController {
 
-    public async index(req: Request, res: Response): Promise<any> {
-        return res.json({
-            name: "matheus"
-        });
+    public async index(req: Request, res: Response, next: NextFunction): Promise<any> {
+        try {
+            const db = new Database();
+            await db.connect();
+            const user = new User(db);
+            const result = await user.getAllUsers();
+            await db.end();
+            return res.status(200).send({
+                results: result
+            });
+        } catch (err) {
+            const error = new HttpError(500, 'Could not find the users.');
+            next(error);
+        }
     }
 
-    public async getUser(req: Request, res: Response): Promise<any> {
-        return res.json({
-            name: "matheus"
-        });
+    public async getUser(req: Request<{ id: number }>, res: Response, next: NextFunction): Promise<any> {
+        try {
+            const id = req.params.id;
+            const db = new Database();
+            await db.connect();
+            const user = new User(db);
+            const result = await user.getUserById(id);
+            await db.end();
+            return res.status(200).send({
+                results: result
+            });
+        } catch (err) {
+            const error = new HttpError(500, 'Could not find the users.');
+            next(error);
+        }
     }
 
     public async createUser(req: Request, res: Response, next: NextFunction): Promise<any> {
@@ -30,13 +51,13 @@ class UserController {
                 db
             );
 
-            if (await user.getUserByName()) {
+            if (await user.checkIfNameExists()) {
                 return res.status(500).send({
                     error: "This name has already been registered, try another!"
                 });
             }
 
-            if (await user.getUserByEmail()) {
+            if (await user.checkIfEmailExists()) {
                 return res.status(500).send({
                     error: "This email has already been registered, try another!"
                 });
@@ -44,23 +65,30 @@ class UserController {
 
             await user.save();
             await db.end();
-            return res.status(201).send('User created successfully');
+            return res.status(201).send({
+                results: "User created successfully"
+            });
         } catch (err) {
             const error = new HttpError(500, 'Could not create account.');
             next(error);
         }
     }
 
-    public async updateUser(req: Request, res: Response): Promise<any> {
-        return res.json({
-            name: "matheus"
-        });
-    }
-
-    public async deleteUser(req: Request, res: Response): Promise<any> {
-        return res.json({
-            name: "matheus"
-        });
+    public async deleteUser(req: Request<{ id: number }>, res: Response, next: NextFunction): Promise<any> {
+        try {
+            const id = req.params.id;
+            const db = new Database();
+            await db.connect();
+            const user = new User(db);
+            await user.delete(id);
+            await db.end();
+            return res.status(200).send({
+                results: "User deleted successfully"
+            });
+        } catch (err) {
+            const error = new HttpError(500, 'Could not delete account.');
+            next(error);
+        }
     }
 
 }

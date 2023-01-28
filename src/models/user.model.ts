@@ -10,6 +10,10 @@ export default class User {
         this.db = db;
     }
 
+    public get getName() {
+        return this.name;
+    }
+
     static create(name: string, email: string, password: string, db: Database): User {
         const user = new User(db);
         user.name = name;
@@ -18,15 +22,29 @@ export default class User {
         return user;
     }
 
-    async getUserByName(): Promise<boolean> {
-        const query = `SELECT * FROM users WHERE name = $1`;
+    async getAllUsers(): Promise<any> {
+        const query = `SELECT * FROM users`;
+        const result = await this.db.query(query, []);
+        return result.rows;
+    }
+
+
+    async getUserById(id: number): Promise<any> {
+        const query = `SELECT * FROM users WHERE id = $1`;
+        const values = [id];
+        const result = await this.db.query(query, values);
+        return result.rows[0];
+    }
+
+    async checkIfNameExists(): Promise<boolean> {
+        const query = `SELECT name FROM users WHERE name = $1`;
         const values = [this.name];
         const result = await this.db.query(query, values);
         return result.rows.length > 0;
     }
 
-    async getUserByEmail(): Promise<boolean> {
-        const query = `SELECT * FROM users WHERE email = $1`;
+    async checkIfEmailExists(): Promise<boolean> {
+        const query = `SELECT email FROM users WHERE email = $1`;
         const values = [this.email];
         const result = await this.db.query(query, values);
         return result.rows.length > 0;
@@ -44,9 +62,9 @@ export default class User {
         return this.db.query(query, values);
     }
 
-    async delete(): Promise<void> {
-        const query = `DELETE FROM users WHERE email = $1`;
-        const values = [this.email];
+    async delete(id: number): Promise<void> {
+        const query = `DELETE FROM users WHERE id = $1`;
+        const values = [id];
         return this.db.query(query, values);
     }
 }
