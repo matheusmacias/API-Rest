@@ -21,7 +21,7 @@ export default class Database {
         }
     }
 
-    public async query(query: string, values: any[]): Promise<any> {
+    public async query(query: string, values?: any[]): Promise<any> {
         try {
             return this.db.query(query, values);
         } catch (err) {

@@ -12,7 +12,7 @@ class UserController {
             const db = new Database();
             await db.connect();
             const user = new User(db);
-            const result = await user.getAllUsers();
+            const result = await user.find(0, Number.MAX_SAFE_INTEGER);
             await db.end();
             return res.status(200).send({
                 results: result
@@ -29,13 +29,13 @@ class UserController {
             const db = new Database();
             await db.connect();
             const user = new User(db);
-            const result = await user.getUserById(id);
+            const result = await user.find(0, 1, { id: id })
             await db.end();
             return res.status(200).send({
-                results: result
+                results: result[0]
             });
         } catch (err) {
-            const error = new HttpError(500, 'Could not find the users.');
+            const error = new HttpError(500, 'Could not find the user.');
             next(error);
         }
     }
@@ -50,14 +50,16 @@ class UserController {
                 req.body.password,
                 db
             );
+            const users = await user.find(0, 1, { name: req.body.name });
+            const email = await user.find(0, 1, { email: req.body.email });
 
-            if (await user.checkIfNameExists()) {
+            if (users.length > 0) {
                 return res.status(500).send({
                     error: "This name has already been registered, try another!"
                 });
             }
 
-            if (await user.checkIfEmailExists()) {
+            if (email.length > 0) {
                 return res.status(500).send({
                     error: "This email has already been registered, try another!"
                 });
