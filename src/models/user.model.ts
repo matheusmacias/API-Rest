@@ -1,16 +1,16 @@
-import Database from "../services/database";
+import IDatabase from "../interfaces/database.interface";
 
 export default class User {
     private name: string;
     private email: string;
     private password: string;
-    private db: Database;
+    private db: IDatabase;
 
-    constructor(db: Database) {
+    constructor(db: IDatabase) {
         this.db = db;
     }
 
-    static create(name: string, email: string, password: string, db: Database): User {
+    static create(name: string, email: string, password: string, db: IDatabase): User {
         const user = new User(db);
         user.name = name;
         user.email = email;

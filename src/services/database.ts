@@ -1,6 +1,8 @@
 import { Client } from 'pg';
 
-export default class Database {
+import IDatabase from '../interfaces/database.interface';
+
+export default class Database implements IDatabase {
     private db: Client;
 
     public constructor() {
