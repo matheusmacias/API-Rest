@@ -12,7 +12,7 @@ class UserController {
             const db = new Database();
             await db.connect();
             const user = new User(db);
-            const result = await user.find(0, Number.MAX_SAFE_INTEGER);
+            const result = await user.find();
             await db.end();
             return res.status(200).send({
                 results: result
@@ -55,13 +55,13 @@ class UserController {
 
             if (users.length > 0) {
                 return res.status(500).send({
-                    error: "This name has already been registered, try another!"
+                    results: "This name has already been registered, try another!"
                 });
             }
 
             if (email.length > 0) {
                 return res.status(500).send({
-                    error: "This email has already been registered, try another!"
+                    results: "This email has already been registered, try another!"
                 });
             }
 

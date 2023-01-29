@@ -10,10 +10,10 @@ class UserRouter {
         this.routes();
     }
     private routes() {
-        this.router.get('/', UserController.index);
-        this.router.get('/:id', UserController.getUser);
-        this.router.post('/', UserController.createUser);
-        this.router.delete('/:id', UserController.deleteUser);
+        this.router.get('/users', UserController.index);
+        this.router.get('/user/:id', UserController.getUser);
+        this.router.post('/user', UserController.createUser);
+        this.router.delete('/user/:id', UserController.deleteUser);
     }
 }
 

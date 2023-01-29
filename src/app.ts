@@ -43,7 +43,7 @@ class App {
         return res.json({
             error: {
                 code: error.status,
-                message: error.message
+                results: error.message
             }
         });
     }
