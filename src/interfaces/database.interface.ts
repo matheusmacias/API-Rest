@@ -1,5 +1,3 @@
 export default interface IDatabase {
-    connect(): Promise<void>;
-    query(query: string, values?: any[]): Promise<any>;
-    end(): Promise<void>;
+    query(query: string, values?: any[], name?: string): Promise<any>;
 }

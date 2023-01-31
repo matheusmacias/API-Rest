@@ -2,8 +2,7 @@ import express, { NextFunction, Request, Response } from 'express';
 import bodyParser from 'body-parser';
 import morgan from 'morgan';
 
-
-import HttpError from './helpers/HttpError';
+import sendError from './helpers/error.helper';
 import userRouter from './routes/user.router';
 
 class App {
@@ -34,11 +33,11 @@ class App {
 
 
     private errorHandlerNotFound(req: Request, res: Response, next: NextFunction): void {
-        const error = new HttpError(404, 'Not Found');
+        const error = new sendError(404, 'Not Found');
         next(error);
     }
 
-    private errorHandler(error: HttpError, req: Request, res: Response, next: NextFunction): any {
+    private errorHandler(error: sendError, req: Request, res: Response, next: NextFunction): any {
         res.status(error.status || 500)
         return res.json({
             error: {
