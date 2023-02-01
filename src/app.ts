@@ -10,27 +10,21 @@ class App {
 
     public constructor() {
         this.express = express();
-        this.bodyParser();
-        this.routes();
         this.middlewares();
+        this.routes();
+        this.express.use(this.errorHandlerNotFound);
+        this.express.use(this.errorHandler);
     }
 
     private routes(): void {
         this.express.use(userRouter);
     }
 
-    private bodyParser(): void {
+    private middlewares(): void {
         this.express.use(bodyParser.json());
         this.express.use(bodyParser.urlencoded({ extended: false }));
-    }
-
-    private middlewares(): void {
-        this.express.use(express.json());
         this.express.use(morgan('dev'));
-        this.express.use(this.errorHandlerNotFound);
-        this.express.use(this.errorHandler);
     }
-
 
     private errorHandlerNotFound(req: Request, res: Response, next: NextFunction): void {
         const error = new sendError(404, 'Not Found');

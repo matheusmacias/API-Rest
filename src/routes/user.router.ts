@@ -13,7 +13,8 @@ class UserRouter {
         this.router.get('/users', UserController.index);
         this.router.get('/user/:id', UserController.getUser);
         this.router.get('/user/update/:id', UserController.update);
-        this.router.post('/user', UserController.createUser);
+        this.router.post('/user/accounts/login', UserController.logIn);
+        this.router.post('/user/accounts/create', UserController.createUser);
         this.router.delete('/user/:id', UserController.deleteUser);
     }
 }

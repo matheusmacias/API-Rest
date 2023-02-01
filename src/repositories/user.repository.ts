@@ -11,6 +11,14 @@ class UserRepository extends User {
         this.db = Database;
     }
 
+    static create(name: string, email: string, password: string): UserRepository {
+        const user = new UserRepository();
+        user.name = name;
+        user.email = email;
+        user.password = password;
+        return user;
+    }
+
     async find(columns: string[], filters?: object, offset?: number, limit?: number): Promise<QueryResultRow> {
         let query = `SELECT ${columns.join(', ')} FROM users`;
         const values: any[] = [];
