@@ -1,3 +1,5 @@
+import bcrypt, { hash } from "bcrypt";
+
 import userRepository from "../repositories/user.repository";
 import IResult from "../interfaces/results.interface";
 
@@ -38,22 +40,31 @@ class UserService {
     public async logIn(email: string, password: string): Promise<IResult> {
         try {
             const user = userRepository;
-            const result = await user.find(["name", "email"], { email: email, password: password });
+            const result = await user.find(["email", "password"], { email: email }, 0, 1);
+
             if (!result.length) {
-                return { status: 500, sucess: false, message: 'Account not found' }
+                return { status: 500, sucess: false, message: 'Account not found' };
             }
-            return { status: 200, sucess: true, message: 'Successfully logged in' }
+
+            const isMatch = await bcrypt.compare(password, result[0].password);
+            if (!isMatch) {
+                return { status: 500, sucess: false, message: 'Incorrect password' };
+            }
+
+
+            return { status: 200, sucess: true, message: 'Successfully logged in' };
         } catch (err) {
-            return { status: 500, sucess: false, message: 'Error: Could not find account.' }
+            return { status: 500, sucess: false, message: 'Error: Could not find account.' };
         }
     }
 
     public async createAccount(name: string, email: string, password: string): Promise<IResult> {
         try {
+            const passwordHash = await hash(password, 10);
             const user = userRepository;
             user.name = name;
             user.email = email;
-            user.password = password;
+            user.password = passwordHash;
 
             if (await this.emailExists(email)) {
                 return { status: 500, sucess: false, message: 'This email has already been registered, try another!' };

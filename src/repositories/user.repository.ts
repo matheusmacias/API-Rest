@@ -19,7 +19,7 @@ class UserRepository extends User {
         return user;
     }
 
-    async find(columns: string[], filters?: object, offset?: number, limit?: number): Promise<QueryResultRow> {
+    async find(columns: string[] = ['*'], filters?: object, offset?: number, limit?: number): Promise<QueryResultRow> {
         let query = `SELECT ${columns.join(', ')} FROM users`;
         const values: any[] = [];
 
