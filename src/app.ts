@@ -34,10 +34,8 @@ class App {
     private errorHandler(error: sendError, req: Request, res: Response, next: NextFunction): any {
         res.status(error.status || 500)
         return res.json({
-            error: {
-                code: error.status,
-                results: error.message
-            }
+            status: error.status,
+            message: error.message
         });
     }
 

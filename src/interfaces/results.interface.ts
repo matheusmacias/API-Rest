@@ -1,5 +1,6 @@
+import { ResultStatus } from "../helpers/statusCode.helper";
 export default interface IResult {
-    status: number;
+    status: ResultStatus;
     sucess: boolean;
     message?: string;
     results?: object;

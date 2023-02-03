@@ -1,44 +1,55 @@
 import { Request, Response, NextFunction } from "express";
+import Joi from "@hapi/joi";
 
-import { userValidationSchema } from "../schemas/validations/user.validation";
+import {
+    userIdValidationSchema,
+    userLoginValidationSchema,
+    userUpdateValidationSchema,
+    userValidationSchema
+} from "../schemas/Joi/user.joi";
 import sendError from "../helpers/error.helper";
 
 class UserMiddleware {
-    validateRegisterFields(req: Request, res: Response, next: NextFunction) {
-        const { name, email, password } = req.body;
+    private validateFields(schema: Joi.ObjectSchema) {
+        return (req: Request, res: Response, next: NextFunction) => {
+            const validation = schema.validate(req.body);
+            if (validation.error) {
+                const errorMessage = validation.error.details.map(error => error.context?.label).join(" ");
+                next(new sendError(400, errorMessage));
+            }
 
-        const validation = userValidationSchema.validate({ name, email, password });
-        if (validation.error) {
-            const errorMessage = validation.error.details.map(error => error.context?.label).join(" ");
-            next(new sendError(400, errorMessage));
-        }
-
-        next();
+            next();
+        };
     }
 
-    validateUpdateFields(req: Request<{ id: number }>, res: Response, next: NextFunction) {
-        const { id } = req.params
-        const { name, email, password } = req.body;
+    private validateFieldsWithId(schema: Joi.ObjectSchema) {
+        return (req: Request<{ id: number }>, res: Response, next: NextFunction) => {
+            const validation = schema.validate({ ...req.params, ...req.body });
+            if (validation.error) {
+                const errorMessage = validation.error.details.map(error => error.context?.label).join(" ");
+                next(new sendError(400, errorMessage));
+            }
 
-        const validation = userValidationSchema.validate({ id, name, email, password });
-        if (validation.error) {
-            const errorMessage = validation.error.details.map(error => error.context?.label).join(" ");
-            next(new sendError(400, errorMessage));
-        }
-
-        next();
+            next();
+        };
     }
 
-    validateLoginFields(req: Request, res: Response, next: NextFunction) {
-        const { email, password } = req.body;
+    private validateFieldOnlyId(schema: Joi.ObjectSchema) {
+        return (req: Request<{ id: number }>, res: Response, next: NextFunction) => {
+            const validation = schema.validate(req.params);
+            if (validation.error) {
+                const errorMessage = validation.error.details.map(error => error.context?.label).join(" ");
+                next(new sendError(400, errorMessage));
+            }
 
-        const validation = userValidationSchema.validate({ email, password });
-        if (validation.error) {
-            const errorMessage = validation.error.details.map(error => error.context?.label).join(" ");
-            next(new sendError(400, errorMessage));
-        }
-
-        next();
+            next();
+        };
     }
+
+    validateIdField = this.validateFieldOnlyId(userIdValidationSchema);
+    validateUpdateFields = this.validateFieldsWithId(userUpdateValidationSchema);
+    validateRegisterFields = this.validateFields(userValidationSchema);
+    validateLoginFields = this.validateFields(userLoginValidationSchema);
 }
+
 export default new UserMiddleware();
