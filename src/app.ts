@@ -2,8 +2,9 @@ import express, { NextFunction, Request, Response } from 'express';
 import bodyParser from 'body-parser';
 import morgan from 'morgan';
 
-import sendError from './helpers/error.helper';
 import userRouter from './routes/user.router';
+import IResult from './interfaces/results.interface';
+import { ResultStatus } from './helpers/statusCode.helper';
 
 class App {
     public express: express.Application;
@@ -27,12 +28,16 @@ class App {
     }
 
     private errorHandlerNotFound(req: Request, res: Response, next: NextFunction): void {
-        const error = new sendError(404, 'Not Found');
+        const error: IResult = {
+            status: ResultStatus.NOT_FOUND,
+            sucess: false,
+            message: 'Not Found'
+        };
         next(error);
     }
 
-    private errorHandler(error: sendError, req: Request, res: Response, next: NextFunction): any {
-        res.status(error.status || 500)
+    private errorHandler(error: IResult, req: Request, res: Response, next: NextFunction): any {
+        res.status(error.status || ResultStatus.INTERNAL_SERVER_ERROR)
         return res.json({
             status: error.status,
             message: error.message

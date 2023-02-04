@@ -27,6 +27,7 @@ class UserController {
         const { email, password } = req.body;
         const results = await userService.logIn(email, password);
         if (results.sucess) {
+            res.set("Authorization", `Bearer ${results.token}`);
             return res.status(results.status).send({ success: results.sucess, message: results.message });
         }
         return res.status(results.status).send({ message: results.message });

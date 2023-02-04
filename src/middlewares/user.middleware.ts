@@ -7,7 +7,8 @@ import {
     userUpdateValidationSchema,
     userValidationSchema
 } from "../schemas/Joi/user.joi";
-import sendError from "../helpers/error.helper";
+import IResult from "../interfaces/results.interface";
+import { ResultStatus } from "../helpers/statusCode.helper";
 
 class UserMiddleware {
     private validateFields(schema: Joi.ObjectSchema) {
@@ -15,7 +16,8 @@ class UserMiddleware {
             const validation = schema.validate(req.body);
             if (validation.error) {
                 const errorMessage = validation.error.details.map(error => error.context?.label).join(" ");
-                next(new sendError(400, errorMessage));
+                const error: IResult = { status: ResultStatus.BAD_REQUEST, sucess: false, message: errorMessage };
+                next(error);
             }
 
             next();
@@ -27,7 +29,8 @@ class UserMiddleware {
             const validation = schema.validate({ ...req.params, ...req.body });
             if (validation.error) {
                 const errorMessage = validation.error.details.map(error => error.context?.label).join(" ");
-                next(new sendError(400, errorMessage));
+                const error: IResult = { status: ResultStatus.BAD_REQUEST, sucess: false, message: errorMessage };
+                next(error);
             }
 
             next();
@@ -39,7 +42,8 @@ class UserMiddleware {
             const validation = schema.validate(req.params);
             if (validation.error) {
                 const errorMessage = validation.error.details.map(error => error.context?.label).join(" ");
-                next(new sendError(400, errorMessage));
+                const error: IResult = { status: ResultStatus.BAD_REQUEST, sucess: false, message: errorMessage };
+                next(error);
             }
 
             next();

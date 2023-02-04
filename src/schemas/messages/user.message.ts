@@ -41,13 +41,13 @@ export const getUserMessages = {
 
 export const logInMessages = {
     emailNotFound: {
-        status: ResultStatus.INTERNAL_SERVER_ERROR,
+        status: ResultStatus.UNAUTHORIZED,
         sucess: false,
         message: 'Account not found.'
     },
 
     passwordIncorrect: {
-        status: ResultStatus.INTERNAL_SERVER_ERROR,
+        status: ResultStatus.UNAUTHORIZED,
         sucess: false,
         message: 'Incorrect password'
     },

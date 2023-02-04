@@ -1,5 +1,6 @@
 import bcrypt, { hash } from "bcrypt";
 
+import { JWT } from "../auth/jwt.auth";
 import userRepository from "../repositories/user.repository";
 import IResult from "../interfaces/results.interface";
 import {
@@ -15,8 +16,7 @@ class UserService {
 
     public async getAll(): Promise<IResult> {
         try {
-            const user = userRepository;
-            const result = await user.find(["name", "email"]);
+            const result = await userRepository.find(["name", "email"]);
             if (!result.length) {
                 return getAllMessages.userNotFound;
             }
@@ -28,8 +28,7 @@ class UserService {
 
     public async getUser(id: number): Promise<IResult> {
         try {
-            const user = userRepository;
-            const result = await user.find(["name", "email"], { id: id }, 0);
+            const result = await userRepository.find(["name", "email"], { id: id }, 0);
             if (!result.length) {
                 return getUserMessages.userNotFound;
             }
@@ -40,15 +39,13 @@ class UserService {
     }
 
     private async emailExists(email: string): Promise<boolean> {
-        const user = userRepository;
-        const getUserByEmail = await user.find(["email"], { email: email }, 0, 1);
+        const getUserByEmail = await userRepository.find(["email"], { email: email }, 0, 1);
         return getUserByEmail.length > 0;
     }
 
-    public async logIn(email: string, password: string): Promise<IResult> {
+    public async logIn(email: string, password: string): Promise<IResult & { token?: string }> {
         try {
-            const user = userRepository;
-            const result = await user.find(["email", "password"], { email: email }, 0, 1);
+            const result = await userRepository.find(["id", "email", "password"], { email: email }, 0, 1);
 
             if (!result.length) {
                 return logInMessages.emailNotFound;
@@ -59,8 +56,12 @@ class UserService {
                 return logInMessages.passwordIncorrect;
             }
 
+            const token = JWT.sign(result[0], {
+                expiresIn: '1d',
+                algorithm: 'HS256'
+            });
 
-            return logInMessages.sucess;
+            return { ...logInMessages.sucess, token: token }
         } catch (err) {
             return logInMessages.catch;
         }
@@ -112,14 +113,13 @@ class UserService {
 
     public async deleteAccount(id: number): Promise<IResult> {
         try {
-            const user = userRepository;
-            const getId = await user.find(["id"], { id: id })
+            const getId = await userRepository.find(["id"], { id: id })
 
             if (!getId.length) {
                 return deleteAccountMessages.userNotFound;
             }
 
-            await user.delete(id);
+            await userRepository.delete(id);
             return deleteAccountMessages.sucess;
         } catch (err) {
             return deleteAccountMessages.catch;
