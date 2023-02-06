@@ -30,7 +30,7 @@ class App {
     private errorHandlerNotFound(req: Request, res: Response, next: NextFunction): void {
         const error: IResult = {
             status: ResultStatus.NOT_FOUND,
-            sucess: false,
+            success: false,
             message: 'Not Found'
         };
         next(error);

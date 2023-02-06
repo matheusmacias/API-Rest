@@ -16,7 +16,7 @@ class UserMiddleware {
             const validation = schema.validate(req.body);
             if (validation.error) {
                 const errorMessage = validation.error.details.map(error => error.context?.label).join(" ");
-                const error: IResult = { status: ResultStatus.BAD_REQUEST, sucess: false, message: errorMessage };
+                const error: IResult = { status: ResultStatus.BAD_REQUEST, success: false, message: errorMessage };
                 next(error);
             }
 
@@ -29,7 +29,7 @@ class UserMiddleware {
             const validation = schema.validate({ ...req.params, ...req.body });
             if (validation.error) {
                 const errorMessage = validation.error.details.map(error => error.context?.label).join(" ");
-                const error: IResult = { status: ResultStatus.BAD_REQUEST, sucess: false, message: errorMessage };
+                const error: IResult = { status: ResultStatus.BAD_REQUEST, success: false, message: errorMessage };
                 next(error);
             }
 
@@ -42,7 +42,7 @@ class UserMiddleware {
             const validation = schema.validate(req.params);
             if (validation.error) {
                 const errorMessage = validation.error.details.map(error => error.context?.label).join(" ");
-                const error: IResult = { status: ResultStatus.BAD_REQUEST, sucess: false, message: errorMessage };
+                const error: IResult = { status: ResultStatus.BAD_REQUEST, success: false, message: errorMessage };
                 next(error);
             }
 

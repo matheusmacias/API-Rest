@@ -6,7 +6,7 @@ class UserController {
 
     public async index(req: Request, res: Response) {
         const results = await userService.getAll();
-        if (results.sucess) {
+        if (results.success) {
             return res.status(results.status).send({ results: results.results });
         }
 
@@ -16,7 +16,7 @@ class UserController {
     public async getUser(req: Request<{ id: number }>, res: Response) {
         const { id } = req.params;
         const results = await userService.getUser(id);
-        if (results.sucess) {
+        if (results.success) {
             return res.status(results.status).send({ results: results.results });
         }
 
@@ -26,9 +26,11 @@ class UserController {
     public async logIn(req: Request, res: Response) {
         const { email, password } = req.body;
         const results = await userService.logIn(email, password);
-        if (results.sucess) {
+        if (results.success) {
             res.set("Authorization", `Bearer ${results.token}`);
-            return res.status(results.status).send({ success: results.sucess, message: results.message });
+            //const authorization = res.get("Authorization")?.split(" ")[1];
+            //console.log(authorization);
+            return res.status(results.status).send({ success: results.success, message: results.message });
         }
         return res.status(results.status).send({ message: results.message });
     }
@@ -37,7 +39,7 @@ class UserController {
         const { name, email, password } = req.body;
         const results = await userService.createAccount(name, email, password);
 
-        if (results.sucess) {
+        if (results.success) {
             return res.status(results.status).send({ message: results.message });
         }
 
@@ -48,7 +50,7 @@ class UserController {
         const { id } = req.params;
         const { name, email, password } = req.body;
         const results = await userService.updateAcccount(id, name, email, password);
-        if (results.sucess) {
+        if (results.success) {
             return res.status(results.status).send({ message: results.message });
         }
         return res.status(results.status).send({ message: results.message });
@@ -57,7 +59,7 @@ class UserController {
     public async deleteUser(req: Request<{ id: number }>, res: Response) {
         const { id } = req.params;
         const results = await userService.deleteAccount(id);
-        if (results.sucess) {
+        if (results.success) {
             return res.status(results.status).send({ message: results.message });
         }
         return res.status(results.status).send({ message: results.message });

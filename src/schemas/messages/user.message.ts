@@ -4,18 +4,18 @@ import { ResultStatus } from "../../helpers/statusCode.helper";
 export const getAllMessages = {
     userNotFound: {
         status: ResultStatus.INTERNAL_SERVER_ERROR,
-        sucess: false,
+        success: false,
         message: 'Users not found'
     },
 
-    sucess: {
+    success: {
         status: ResultStatus.OK,
-        sucess: true
+        success: true
     },
 
     catch: {
         status: ResultStatus.INTERNAL_SERVER_ERROR,
-        sucess: false,
+        success: false,
         message: 'Error: Could not find the users'
     }
 };
@@ -23,18 +23,18 @@ export const getAllMessages = {
 export const getUserMessages = {
     userNotFound: {
         status: ResultStatus.INTERNAL_SERVER_ERROR,
-        sucess: false,
+        success: false,
         message: 'User not found'
     },
 
-    sucess: {
+    success: {
         status: ResultStatus.OK,
-        sucess: true
+        success: true
     },
 
     catch: {
         status: ResultStatus.INTERNAL_SERVER_ERROR,
-        sucess: false,
+        success: false,
         message: 'Error: Could not find the user'
     }
 };
@@ -42,25 +42,25 @@ export const getUserMessages = {
 export const logInMessages = {
     emailNotFound: {
         status: ResultStatus.UNAUTHORIZED,
-        sucess: false,
+        success: false,
         message: 'Account not found.'
     },
 
     passwordIncorrect: {
         status: ResultStatus.UNAUTHORIZED,
-        sucess: false,
+        success: false,
         message: 'Incorrect password'
     },
 
-    sucess: {
+    success: {
         status: ResultStatus.OK,
-        sucess: true,
+        success: true,
         message: 'Successfully logged in.'
     },
 
     catch: {
         status: ResultStatus.INTERNAL_SERVER_ERROR,
-        sucess: false,
+        success: false,
         message: 'Error: Could not find account.'
     }
 };
@@ -68,19 +68,19 @@ export const logInMessages = {
 export const createAccountMessages = {
     emailExists: {
         status: ResultStatus.INTERNAL_SERVER_ERROR,
-        sucess: false,
+        success: false,
         message: 'This email has already been registered, try another!'
     },
 
-    sucess: {
+    success: {
         status: ResultStatus.OK,
-        sucess: true,
+        success: true,
         message: 'User created successfully'
     },
 
     catch: {
         status: ResultStatus.INTERNAL_SERVER_ERROR,
-        sucess: false,
+        success: false,
         message: 'Could not create account.'
     }
 };
@@ -88,19 +88,19 @@ export const createAccountMessages = {
 export const updateAcccountMessages = {
     emailExists: {
         status: ResultStatus.INTERNAL_SERVER_ERROR,
-        sucess: false,
+        success: false,
         message: 'This email has already been registered, try another!'
     },
 
-    sucess: {
+    success: {
         status: ResultStatus.OK,
-        sucess: true,
+        success: true,
         message: 'Account updated successfully'
     },
 
     catch: {
         status: ResultStatus.INTERNAL_SERVER_ERROR,
-        sucess: false,
+        success: false,
         message: 'Unable to update your email.'
     }
 };
@@ -108,19 +108,19 @@ export const updateAcccountMessages = {
 export const deleteAccountMessages = {
     userNotFound: {
         status: ResultStatus.INTERNAL_SERVER_ERROR,
-        sucess: false,
+        success: false,
         message: 'User not found'
     },
 
-    sucess: {
+    success: {
         status: ResultStatus.OK,
-        sucess: true,
+        success: true,
         message: 'User deleted successfully'
     },
 
     catch: {
         status: ResultStatus.INTERNAL_SERVER_ERROR,
-        sucess: false,
+        success: false,
         message: 'Could not delete account.'
     }
 };

@@ -20,7 +20,7 @@ class UserService {
             if (!result.length) {
                 return getAllMessages.userNotFound;
             }
-            return { ...getAllMessages.sucess, results: result };
+            return { ...getAllMessages.success, results: result };
         } catch (err) {
             return getAllMessages.catch;
         }
@@ -32,7 +32,7 @@ class UserService {
             if (!result.length) {
                 return getUserMessages.userNotFound;
             }
-            return { ...getUserMessages.sucess, results: result[0] };
+            return { ...getUserMessages.success, results: result[0] };
         } catch (err) {
             return getUserMessages.catch;
         }
@@ -45,7 +45,7 @@ class UserService {
 
     public async logIn(email: string, password: string): Promise<IResult & { token?: string }> {
         try {
-            const result = await userRepository.find(["id", "email", "password"], { email: email }, 0, 1);
+            const result = await userRepository.find(["id", "email", "password", "privilege"], { email: email }, 0, 1);
 
             if (!result.length) {
                 return logInMessages.emailNotFound;
@@ -61,13 +61,13 @@ class UserService {
                 algorithm: 'HS256'
             });
 
-            return { ...logInMessages.sucess, token: token }
+            return { ...logInMessages.success, token: token };
         } catch (err) {
             return logInMessages.catch;
         }
     }
 
-    public async createAccount(name: string, email: string, password: string): Promise<IResult> {
+    public async createAccount(name: string, email: string, password: string): Promise<IResult & { token?: string }> {
         try {
             const passwordHash = await hash(password, 10);
             const user = userRepository;
@@ -78,9 +78,14 @@ class UserService {
             if (await this.emailExists(email)) {
                 return createAccountMessages.emailExists;
             }
-
             user.save();
-            return createAccountMessages.sucess;
+            const result = await userRepository.find(["id", "email", "password"], { email: user.email }, 0, 1);
+
+            const token = JWT.sign(result[0], {
+                expiresIn: '1d',
+                algorithm: 'HS256'
+            });
+            return { ...createAccountMessages.success, token: token };
         } catch (err) {
             return createAccountMessages.catch;
         }
@@ -104,7 +109,7 @@ class UserService {
             }
 
             await user.update({ name: user.name, email: user.email, password: passwordHash }, { id: id });
-            return updateAcccountMessages.sucess;
+            return updateAcccountMessages.success;
         } catch (err) {
             return updateAcccountMessages.catch;
         }
@@ -120,7 +125,7 @@ class UserService {
             }
 
             await userRepository.delete(id);
-            return deleteAccountMessages.sucess;
+            return deleteAccountMessages.success;
         } catch (err) {
             return deleteAccountMessages.catch;
         }
